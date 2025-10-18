@@ -13,7 +13,7 @@ This repository documents a **secure, multi-customer architecture** for Azure AI
   📘 [AI resources (hubs & projects)](https://learn.microsoft.com/azure/ai-foundry/concepts/ai-resources)
 
 - **Project:** A workspace under a Hub where teams build and operate AI apps (agents, prompt flows, evaluations, deployments).  
-  📘 [Projects in Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/concepts/projects)
+  📘 [Projects in Azure AI Foundry](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/create-projects)
 
 - **Default resources:** When you create a Hub, Azure provisions a **Storage Account**, **Key Vault**, and **Azure Container Registry (ACR)** that you can secure with Private Endpoints.  
   📘 [Hub + default resources and networking](https://learn.microsoft.com/azure/ai-foundry/how-to/hub-configure-private-link)
