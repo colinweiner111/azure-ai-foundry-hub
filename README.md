@@ -52,58 +52,7 @@ flowchart LR
 
 ---
 
-## 🎨 Visual Enhancements
-
-### Enhanced Architecture Diagram (Service Provider View)
-
-```mermaid
-flowchart TB
-  subgraph "🏢 On-Premises"
-    mgmt["👨‍💼 Management<br/>Dashboard Access"]
-    dev["👩‍💻 Developer<br/>Workstations"]
-    ds["🧪 Data Scientists<br/>Notebooks"]
-  end
-
-  subgraph "🔗 ExpressRoute"
-    er2["🔒 Private Connectivity<br/>No Internet Exposure"]
-  end
-
-  subgraph "☁️ Azure (Tenant: Contoso Corp)"
-    hub2["🏢 Azure AI Foundry Hub<br/>Centralized Governance"]
-    storage["📦 Storage Account<br/>Model & Data Storage"]
-    kv["🔑 Key Vault<br/>Secrets & Certificates"]
-    acr["🧰 Container Registry<br/>Custom Images"]
-  end
-
-  subgraph "🧱 Customer Projects"
-    proj1["🏗️ Agency A Project<br/>Isolated Workspace"]
-    proj2["🏢 Agency B Project<br/>Isolated Workspace"]
-    proj3["🏛️ Agency C Project<br/>Isolated Workspace"]
-  end
-
-  subgraph "🔐 Private Endpoints"
-    pe1["🔒 Hub PE"]
-    pe2["📥 Storage PE"]
-    pe3["🔐 Key Vault PE"]
-    pe4["🧩 ACR PE"]
-  end
-
-  mgmt -->|HTTPS| er2
-  dev -->|Git/SDK| er2
-  ds -->|Jupyter/API| er2
-
-  er2 --> pe1 & pe2 & pe3 & pe4
-
-  proj1 --> hub2
-  proj2 --> hub2
-  proj3 --> hub2
-
-  hub2 --> storage & kv & acr
-```
-
----
-
-## ⚙️ Deployment Steps (Azure CLI)
+## ⚙️ Deployment Steps## ⚙️ Deployment Steps (Azure CLI)
 
 > This process ensures all Foundry components are deployed securely with private connectivity through ExpressRoute.
 
