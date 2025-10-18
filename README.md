@@ -1,8 +1,6 @@
 # Azure AI Foundry (Hub Model) – Service-Provider Architecture with ExpressRoute & Private Endpoints
 
-> **Author:** Colin Weiner  
-> **Version:** v1.0 (GitHub-ready Markdown version)  
-> **Last updated:** October 2025
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) ![Azure AI Foundry](https://img.shields.io/badge/Azure%20AI%20Foundry-Hub%20Model-008AD7) ![Private Link](https://img.shields.io/badge/Network-Private%20Link%20%2F%20ExpressRoute-5e527f) ![Mermaid](https://img.shields.io/badge/Diagram-Mermaid-1f425f)
 
 This repository documents a **secure, multi-customer architecture** for Azure AI Foundry using the **Hub Model**, integrated with **ExpressRoute**, **Private Endpoints**, and **Private DNS**. It’s designed for **service providers** hosting multiple customer projects within the same Azure tenant.
 
@@ -32,7 +30,7 @@ flowchart LR
       PESTG[Private Endpoint: Storage]
       PEKV[Private Endpoint: Key Vault]
       PEACR[Private Endpoint: ACR]
-      DNS[Private DNS Zones\n(privatelink.*)]
+      DNS[Private DNS Zones (privatelink.*)]
       FW[Azure Firewall / NVA (optional)]
     end
 
