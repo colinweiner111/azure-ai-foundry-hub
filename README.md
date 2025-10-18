@@ -52,9 +52,9 @@ flowchart LR
 
 ---
 
-## 🎨 Visual Enhancements
+## 🧩 Service Provider Architecture Diagram
 
-### Enhanced Architecture Diagram (Service Provider View)
+
 
 ```mermaid
 flowchart TB
