@@ -30,7 +30,7 @@ flowchart LR
       PESTG[Private Endpoint: Storage]
       PEKV[Private Endpoint: Key Vault]
       PEACR[Private Endpoint: ACR]
-      DNS[Private DNS Zones (privatelink.*)]
+      DNS["Private DNS Zones (privatelink.*)"]
       FW[Azure Firewall / NVA (optional)]
     end
 
