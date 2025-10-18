@@ -12,45 +12,34 @@ This architecture pattern allows each internal customer (department, agency, or 
 
 ---
 
-## 🧩 Architecture Diagram (Mermaid)
+## 🧩 Architecture Diagram (Mermaid – simplified for GitHub parser)
 
 ```mermaid
 flowchart LR
-    subgraph OnPrem[Customer Networks]
-      A1[Agency A LAN]
-      A2[Agency B LAN]
-    end
+    onpremA["Agency A LAN"]
+    onpremB["Agency B LAN"]
+    er["ExpressRoute Private Peering"]
+    hub["Azure AI Foundry Hub (AML Workspace)"]
+    projA["Project A"]
+    projB["Project B"]
+    dns["Private DNS Zones - privatelink"]
+    peHub["Private Endpoint - Foundry Hub"]
+    peStg["Private Endpoint - Storage"]
+    peKv["Private Endpoint - Key Vault"]
+    peAcr["Private Endpoint - ACR"]
 
-    subgraph ER[ExpressRoute Private Peering]
-      ERGW[ER Circuit]
-    end
+    onpremA --- er
+    onpremB --- er
+    er --- hub
 
-    subgraph HubVNet[Hub VNet]
-      PEHUB[Private Endpoint: Foundry Hub]
-      PESTG[Private Endpoint: Storage]
-      PEKV[Private Endpoint: Key Vault]
-      PEACR[Private Endpoint: ACR]
-      DNS["Private DNS Zones - privatelink"]
-      FW["Azure Firewall / NVA (optional)"]
-    end
+    projA --> hub
+    projB --> hub
 
-    subgraph Projects[Azure AI Foundry Hub + Projects]
-      HUB[Hub (AML Workspace)]
-      PRJA[Project A]
-      PRJB[Project B]
-    end
-
-    A1 --- ERGW --- HubVNet
-    A2 --- ERGW
-    HubVNet ---|VNet Peering| Projects
-
-    HUB --- PEHUB
-    HUB --- PESTG
-    HUB --- PEKV
-    HUB --- PEACR
-    DNS --- HubVNet
-    PRJA --> HUB
-    PRJB --> HUB
+    hub --- peHub
+    hub --- peStg
+    hub --- peKv
+    hub --- peAcr
+    dns --- hub
 ```
 
 ---
