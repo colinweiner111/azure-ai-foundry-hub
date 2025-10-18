@@ -23,71 +23,85 @@ This repository documents a **secure, multi-customer architecture** for Azure AI
 ## 🧩 Architecture Diagram
 
 ```mermaid
-flowchart TB
-  %% ==== On-Premises ====
-  subgraph "🏢 On-Premises (Agencies)"
-    mgmt["👨‍💼 Management<br/>Dashboard Access"]
-    dev["👩‍💻 Developers<br/>Workstations"]
-    ds["🧪 Data Scientists<br/>Notebooks"]
-  end
+flowchart LR
+    onpremA["Agency A LAN"]
+    onpremB["Agency B LAN"]
+    er["ExpressRoute Private Peering"]
+    hub["Azure AI Foundry Hub (AML Workspace)"]
+    projA["Project A"]
+    projB["Project B"]
+    dns["Private DNS Zones - privatelink"]
+    peHub["Private Endpoint - Foundry Hub"]
+    peStg["Private Endpoint - Storage"]
+    peKv["Private Endpoint - Key Vault"]
+    peAcr["Private Endpoint - ACR"]
 
-  %% ==== Connectivity ====
-  subgraph "🔗 ExpressRoute (Private Peering)"
-    er["🔒 Private Connectivity<br/>No Internet Exposure"]
-  end
+    onpremA --- er
+    onpremB --- er
+    er --- hub
 
-  %% ==== Azure Hub ====
-  subgraph "☁️ Azure AI Foundry Hub (Central Governance)"
-    hub["🏢 Hub (Azure ML Workspace)<br/>Central Landing Zone"]
-    storage["📦 Storage Account<br/>Model & Data Storage"]
-    kv["🔑 Key Vault<br/>Secrets & Certificates"]
-    acr["🧰 Azure Container Registry<br/>Custom Images"]
-    dns["🌐 Private DNS Zones<br/>privatelink.*"]
-  end
+    projA --> hub
+    projB --> hub
 
-  %% ==== Private Endpoints ====
-  subgraph "🔐 Private Endpoints (Hub Resources)"
-    peHub["🔒 Hub PE"]
-    peStg["📥 Storage PE"]
-    peKv["🔐 Key Vault PE"]
-    peAcr["🧩 ACR PE"]
-  end
-
-  %% ==== Customer Projects ====
-  subgraph "🧱 Customer Projects"
-    projA["🏗️ Agency A Project<br/>Isolated Workspace"]
-    projB["🏢 Agency B Project<br/>Isolated Workspace"]
-    projC["🏛️ Agency C Project<br/>Isolated Workspace"]
-  end
-
-  %% ==== Relationships ====
-  mgmt -->|HTTPS| er
-  dev -->|SDK/Git| er
-  ds -->|Jupyter/API| er
-
-  er --> peHub & peStg & peKv & peAcr
-
-  projA --> hub
-  projB --> hub
-  projC --> hub
-
-  hub --> storage & kv & acr & dns
-
-  dns -.-> peHub & peStg & peKv & peAcr
-
-  %% ==== Visual Emphasis ====
-  classDef azure fill:#E6F2FF,stroke:#0078D4,stroke-width:1px;
-  classDef private fill:#F3F2F1,stroke:#8A8886,stroke-width:1px,stroke-dasharray: 2 2;
-  classDef customer fill:#FFF4E5,stroke:#EAA300,stroke-width:1px;
-  classDef onprem fill:#E8F5E9,stroke:#34A853,stroke-width:1px;
-  class hub,storage,kv,acr,dns azure;
-  class peHub,peStg,peKv,peAcr private;
-  class projA,projB,projC customer;
-  class mgmt,dev,ds onprem;
+    hub --- peHub
+    hub --- peStg
+    hub --- peKv
+    hub --- peAcr
+    dns --- hub
 ```
 
 ---
 
+## 🎨 Visual Enhancements
+
+### Enhanced Architecture Diagram (Service Provider View)
+
+```mermaid
+flowchart TB
+  subgraph "🏢 On-Premises"
+    mgmt["👨‍💼 Management<br/>Dashboard Access"]
+    dev["👩‍💻 Developer<br/>Workstations"]
+    ds["🧪 Data Scientists<br/>Notebooks"]
+  end
+
+  subgraph "🔗 ExpressRoute"
+    er2["🔒 Private Connectivity<br/>No Internet Exposure"]
+  end
+
+  subgraph "☁️ Azure (Tenant: Contoso Corp)"
+    hub2["🏢 Azure AI Foundry Hub<br/>Centralized Governance"]
+    storage["📦 Storage Account<br/>Model & Data Storage"]
+    kv["🔑 Key Vault<br/>Secrets & Certificates"]
+    acr["🧰 Container Registry<br/>Custom Images"]
+  end
+
+  subgraph "🧱 Customer Projects"
+    proj1["🏗️ Agency A Project<br/>Isolated Workspace"]
+    proj2["🏢 Agency B Project<br/>Isolated Workspace"]
+    proj3["🏛️ Agency C Project<br/>Isolated Workspace"]
+  end
+
+  subgraph "🔐 Private Endpoints"
+    pe1["🔒 Hub PE"]
+    pe2["📥 Storage PE"]
+    pe3["🔐 Key Vault PE"]
+    pe4["🧩 ACR PE"]
+  end
+
+  mgmt -->|HTTPS| er2
+  dev -->|Git/SDK| er2
+  ds -->|Jupyter/API| er2
+
+  er2 --> pe1 & pe2 & pe3 & pe4
+
+  proj1 --> hub2
+  proj2 --> hub2
+  proj3 --> hub2
+
+  hub2 --> storage & kv & acr
+```
+
+---
 
 ## ⚙️ Deployment Steps (Azure CLI)
 
