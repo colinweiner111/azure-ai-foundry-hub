@@ -157,8 +157,8 @@ az ml workspace show -n aif-hub-prod-wus3 -g rg-prod-aif-hub --query publicNetwo
 - [ACR Private Link](https://learn.microsoft.com/azure/container-registry/container-registry-private-link)  
 - [Storage Private Endpoints](https://learn.microsoft.com/azure/storage/common/storage-private-endpoints)  
 - [Key Vault Private Endpoints](https://learn.microsoft.com/azure/key-vault/general/private-link-service)  
-- [How to configure Private Link for Azure AI Foundry](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/configure-private-link)  
-  📘 [Configure managed network for Azure AI Foundry hubs](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/configure-managed-network)
+- [How to configure Private Link for Azure AI Foundry](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/configure-private-link)
+- [Configure managed network for Azure AI Foundry hubs](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/configure-managed-network)
 
 ---
 
