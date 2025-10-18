@@ -15,13 +15,13 @@ This repository documents a **secure, multi-customer architecture** for Azure AI
 - **Project:** A workspace under a Hub where teams build and operate AI apps (agents, prompt flows, evaluations, deployments).  
   📘 [Projects in Azure AI Foundry](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/create-projects)
 
-An Azure AI Foundry project supports two types of projects: a **hub-based project** and an **Azure AI Foundry project**. In most cases, you want to use an Azure AI Foundry project.
+  Azure AI Foundry supports two types of projects: a **hub-based project** and an **Azure AI Foundry project**. In most cases, you want to use an Azure AI Foundry project.
 
-An **Azure AI Foundry project** is managed under an Azure AI Foundry resource. It's a container for access management, data upload and integration, and monitoring. This lets you keep your work separated between use cases without needing to create extra Azure resources.
+  An **Azure AI Foundry project** is managed under an Azure AI Foundry resource. It's a container for access management, data upload and integration, and monitoring. This lets you keep your work separated between use cases without needing to create extra Azure resources.
 
-A **hub-based project** is hosted by an Azure AI Foundry hub. If your company has an administrative team that created a hub for you, you can create a project from that hub. If you're working on your own, you can create a project and a default hub will automatically be created for you.
+  A **hub-based project** is hosted by an Azure AI Foundry hub. If your company has an administrative team that created a hub for you, you can create a project from that hub. If you're working on your own, you can create a project and a default hub will automatically be created for you.
 
-To understand how the newer Azure AI Foundry project differs from the hub-based project, see [New Foundry projects overview](https://learn.microsoft.com/en-us/azure/ai-foundry/what-is-azure-ai-foundry#project-types).
+  To understand how the newer Azure AI Foundry project differs from the hub-based project, see [New Foundry projects overview](https://learn.microsoft.com/en-us/azure/ai-foundry/what-is-azure-ai-foundry#project-types).
 
 
 - **Default resources:** When you create a Hub, Azure provisions a **Storage Account**, **Key Vault**, and **Azure Container Registry (ACR)** that you can secure with Private Endpoints.  
