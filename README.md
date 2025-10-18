@@ -30,8 +30,8 @@ flowchart LR
       PESTG[Private Endpoint: Storage]
       PEKV[Private Endpoint: Key Vault]
       PEACR[Private Endpoint: ACR]
-      DNS[Private DNS Zones - privatelink]
-      FW[Azure Firewall / NVA (optional)]
+      DNS["Private DNS Zones - privatelink"]
+      FW["Azure Firewall / NVA (optional)"]
     end
 
     subgraph Projects[Azure AI Foundry Hub + Projects]
