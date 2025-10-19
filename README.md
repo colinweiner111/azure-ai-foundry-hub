@@ -161,12 +161,3 @@ az ml workspace show -n aif-hub-prod-wus3 -g rg-prod-aif-hub --query publicNetwo
 - [Configure managed network for Azure AI Foundry hubs](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/configure-managed-network)
 
 ---
-
-## 🗂 Repository Structure Example
-```
-/azure-ai-foundry-hub/
-├── README.md                   ← this file
-├── /scripts/                   ← CLI scripts for deployment
-├── /diagrams/                  ← exported PNGs or .mmd files
-└── LICENSE
-```
