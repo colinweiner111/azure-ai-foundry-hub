@@ -23,7 +23,6 @@ This repository documents a **secure, multi-customer architecture** for Azure AI
 
   To understand how the newer Azure AI Foundry project differs from the hub-based project, see [New Foundry projects overview](https://learn.microsoft.com/en-us/azure/ai-foundry/what-is-azure-ai-foundry#project-types).
 
-
 - **Default resources:** When you create a Hub, Azure provisions a **Storage Account**, **Key Vault**, and **Azure Container Registry (ACR)** that you can secure with Private Endpoints.  
   📘 [Hub + default resources and networking](https://learn.microsoft.com/azure/ai-foundry/how-to/hub-configure-private-link)
 
@@ -61,14 +60,13 @@ flowchart LR
 
 ---
 
-## ⚙️ Deployment Steps## ⚙️ Deployment Steps (Azure CLI)
+## ⚙️ Deployment Steps (Azure CLI)
 
 > This process ensures all Foundry components are deployed securely with private connectivity through ExpressRoute.
 
 ### 🚀 Step 1: Prepare Environment
 - ✅ Ensure ExpressRoute private peering to the Hub VNet is active.  
-- ✅ Confirm required providers are registered:  
-  `Microsoft.MachineLearningServices`, `Microsoft.Network`, `Microsoft.ContainerRegistry`, `Microsoft.KeyVault`, `Microsoft.Storage`.
+- ✅ Confirm required providers are registered:
 
 ```bash
 az provider register --namespace Microsoft.MachineLearningServices
@@ -82,7 +80,7 @@ az provider register --namespace Microsoft.Storage
 
 ### 🏗️ Step 2: Create the Hub
 ```bash
-az ml workspace create   --name aif-hub-prod-wus3   --resource-group rg-prod-aif-hub   --location westus3
+az ml workspace create --name aif-hub-prod-wus3 --resource-group rg-prod-aif-hub --location westus3
 ```
 📘 [Azure ML Workspace creation reference](https://learn.microsoft.com/azure/machine-learning/reference-azure-machine-learning-cli)
 
@@ -92,22 +90,19 @@ az ml workspace create   --name aif-hub-prod-wus3   --resource-group rg-prod-aif
 Each Foundry component (Hub, Storage, Key Vault, ACR) should use its own Private Endpoint.
 
 ```bash
-# Hub (AML Workspace)
-az network private-endpoint create   -g rg-prod-net -n pe-aifhub   --subnet snet-pe   --private-connection-resource-id $(az ml workspace show -n aif-hub-prod-wus3 -g rg-prod-aif-hub --query id -o tsv)   --group-ids amlworkspace   --connection-name peconn-aifhub
+az network private-endpoint create -g rg-prod-net -n pe-aifhub --subnet snet-pe --private-connection-resource-id $(az ml workspace show -n aif-hub-prod-wus3 -g rg-prod-aif-hub --query id -o tsv) --group-ids amlworkspace --connection-name peconn-aifhub
 ```
-
 📘 [Private Link overview](https://learn.microsoft.com/azure/private-link/private-link-overview)
 
 ---
 
 ### 🌐 Step 4: Configure Private DNS Zones
 ```bash
-for Z in   privatelink.api.azureml.ms   privatelink.notebooks.azure.net   privatelink.vaultcore.azure.net   privatelink.blob.core.windows.net   privatelink.azurecr.io; do
+for Z in privatelink.api.azureml.ms privatelink.notebooks.azure.net privatelink.vaultcore.azure.net privatelink.blob.core.windows.net privatelink.azurecr.io; do
   az network private-dns zone create -g rg-prod-dns -n $Z
-  az network private-dns link vnet create -g rg-prod-dns -z $Z -n link-$Z     -v $(az network vnet show -g rg-prod-net -n vnet-hub-prod-wus3 --query id -o tsv) --registration-enabled false
+  az network private-dns link vnet create -g rg-prod-dns -z $Z -n link-$Z -v $(az network vnet show -g rg-prod-net -n vnet-hub-prod-wus3 --query id -o tsv) --registration-enabled false
 done
 ```
-
 📘 [Private DNS integration guide](https://learn.microsoft.com/azure/private-link/private-endpoint-dns)
 
 ---
@@ -121,7 +116,6 @@ az keyvault update --name kv-prod-aif-hub --resource-group rg-prod-aif-hub --pub
 az acr update --name acrprodwus3 --resource-group rg-prod-aif-hub --public-network-enabled false
 az storage account update --name stgprodwus3 --resource-group rg-prod-aif-hub --public-network-access Disabled
 ```
-
 📘 [Hub Private Link configuration](https://learn.microsoft.com/azure/ai-foundry/how-to/hub-configure-private-link)
 
 ---
@@ -149,6 +143,53 @@ az ml workspace show -n aif-hub-prod-wus3 -g rg-prod-aif-hub --query publicNetwo
 
 ---
 
+## 📈 Scaling & Performance
+
+Azure AI Foundry hubs and projects can be scaled both **vertically** (more compute/storage for existing workloads) and **horizontally** (more projects or regions).  
+
+### Scaling Strategies
+- **Horizontal Scaling:** Use landing zone automation (e.g., Bicep, Terraform, or Azure Blueprints) to deploy repeatable hub+project environments per business unit or customer.  
+- **Compute Scaling:** Use autoscale settings for compute clusters and managed online endpoints.  
+- **Storage & Networking:** Use ZRS or GRS for resilience and ExpressRoute bandwidth upgrades for increased throughput.  
+- **Capacity Management:** Track utilization across hubs and projects via Azure Monitor metrics.
+
+📘 [Scale compute clusters in Azure ML](https://learn.microsoft.com/azure/machine-learning/how-to-auto-scale-clusters)
+
+---
+
+## 🔍 Monitoring & Observability
+
+Comprehensive monitoring ensures security, performance, and cost visibility across all Foundry resources.
+
+### Recommended Setup
+- **Centralized Log Analytics Workspace:** All hub and project diagnostics flow to a shared workspace.  
+- **Azure Monitor Metrics:** Collect metrics from Azure ML, ACR, Storage, and Key Vault.  
+- **Application Insights:** Track model deployments, endpoint latency, and errors.  
+- **Dashboards:** Create workbooks or Power BI dashboards summarizing compute, cost, and endpoint performance.  
+- **Alerts:** Define alerts for cost anomalies, security threats, and performance degradation.
+
+📘 [Monitor Azure Machine Learning](https://learn.microsoft.com/azure/machine-learning/how-to-monitor-resources)
+
+---
+
+## 🧭 Guardrails & Governance
+
+Establishing **guardrails** ensures compliance and consistency across all AI Foundry environments.
+
+### Core Guardrails
+| Category | Example Guardrail | Enforcement Method |
+|-----------|-------------------|--------------------|
+| **Networking** | All resources use Private Endpoints only | Azure Policy (Deny Public Access) |
+| **Security** | Enable Defender for Cloud on all subscriptions | Policy Initiative + ASC integration |
+| **Identity** | Enforce RBAC and PIM for privileged roles | Azure AD / Entra ID Governance |
+| **Data** | Storage accounts use customer-managed keys (CMK) | Policy Initiative |
+| **Cost** | Tagging required for chargeback (`costCenter`, `projectId`) | Policy + FinOps Toolkit |
+| **Compliance** | Require regional data residency | Policy + Blueprint |
+
+📘 [Azure Landing Zone Guardrails](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/design-area/security)
+
+---
+
 ## 📚 Additional Resources
 - [Azure AI Foundry overview](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry)  
 - [Hub + Projects architecture](https://learn.microsoft.com/azure/ai-foundry/concepts/ai-resources)  
@@ -156,7 +197,6 @@ az ml workspace show -n aif-hub-prod-wus3 -g rg-prod-aif-hub --query publicNetwo
 - [Repo Link for AI Landing Zone](https://github.com/Azure/AI-Landing-Zones)  
 - [Private DNS with Private Endpoints](https://learn.microsoft.com/azure/private-link/private-endpoint-dns)  
 - [ACR Private Link](https://learn.microsoft.com/azure/container-registry/container-registry-private-link)  
-- [How to configure Private Link for Azure AI Foundry](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/configure-private-link)
+- [How to configure Private Link for Azure AI Foundry](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/configure-private-link)  
 - [Configure managed network for Azure AI Foundry hubs](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/configure-managed-network)
 
----
